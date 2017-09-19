@@ -18,8 +18,10 @@ public class Game {
     double witchDelay;
     double prophetDelay;
     boolean skillUsed;
+    int numWolves;
     Map<Integer, User> players;
     Set<Integer> deadPlayers;
+    List<User> playerList;
     Date date;
     double timestamp;
 
@@ -27,13 +29,14 @@ public class Game {
         this.numPlayers = numPlayers;
         this.hasDumbass = hasDumbass;
         this.hasHunter = hasHunter;
+        this.numWolves = numWolves;
         Random r = new Random();
         wolfDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         witchDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         prophetDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         players = new HashMap<Integer, User>();
         deadPlayers = new HashSet<Integer>();
-        List<User> playerList = new ArrayList<User>();
+        playerList = new ArrayList<User>();
 
         for (int i = 0; i < numPlayers; i++) {
             playerList.add( new User(i + 1) );
@@ -175,5 +178,44 @@ public class Game {
                 break;
         }
         return "";
+    }
+
+    public void reshuffle() {
+        gameState = 0;
+        Collections.shuffle( playerList );
+        for (int i = 0; i < numPlayers; i++) {
+            if (i < numWolves) {
+                playerList.get(i).setIdentity( "wolf" );
+                continue;
+            }
+            if (i == numWolves) {
+                playerList.get(i).setIdentity( "prophet" );
+                continue;
+            }
+            if (i == numWolves + 1) {
+                playerList.get(i).setIdentity( "witch" );
+                continue;
+            }
+            if (i == numWolves + 2 && hasHunter) {
+                playerList.get(i).setIdentity( "hunter" );
+                continue;
+            }
+            if (i == numWolves + 3 && hasDumbass) {
+                playerList.get(i).setIdentity( "dumbass" );
+                continue;
+            }
+            playerList.get(i).setIdentity( "villager" );
+        }
+
+        players.clear();
+        for (User u : playerList) {
+            players.put( u.getUserId(), u );
+        }
+
+        Random r = new Random();
+        wolfDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
+        witchDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
+        prophetDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
+        timestamp = 0.0;
     }
 }
