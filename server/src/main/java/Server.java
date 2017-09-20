@@ -72,5 +72,8 @@ public class Server {
             Game.reshuffle();
             return "";
         });
+        get( "lastNightInfo/*", (req, res) -> {
+            return Game.getLastNightInfo();
+        });
     }
 }

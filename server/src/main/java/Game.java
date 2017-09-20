@@ -22,8 +22,7 @@ public class Game {
     static Map<Integer, User> players;
     static Set<Integer> deadPlayers;
     static List<User> playerList;
-    static Date date;
-    static double timestamp;
+    static long timestamp;
 
     public static void startGame(int numPlayers, int numWolves, boolean hasHunter, boolean hasDumbass) {
         Game.numPlayers = numPlayers;
@@ -95,38 +94,41 @@ public class Game {
      * @return  1 if wolf, 0 if not wolf, -1 if user is not prophet
      */
     public static int useSkill(Skill usedSkill) {
-        if (!hasKilled && usedSkill.getKilled() > 0) {
-            deadPlayers.add( usedSkill.getKilled() );
-            timestamp = date.getTime();
-            skillUsed = true;
-            return -1;
-        }
-        if (usedSkill.isSaved()) {
-            deadPlayers.clear();
-            timestamp = date.getTime();
-            skillUsed = true;
-            return -1;
-        }
-        else if (usedSkill.getPoisoned() > 0) {
-            deadPlayers.add(usedSkill.getPoisoned());
-            timestamp = date.getTime();
-            skillUsed = true;
-            return -1;
-        }
-        if (usedSkill.getChecked() > 0) {
-            if (players.get(usedSkill.getChecked()).getIdentity().equals("wolf")) {
-                timestamp = date.getTime();
+        try {
+            if (!hasKilled && usedSkill.getKilled() > 0) {
+                deadPlayers.add(usedSkill.getKilled());
+                timestamp = System.currentTimeMillis();
                 skillUsed = true;
-                return 1;
+                return -1;
             }
-            else {
-                timestamp = date.getTime();
+            if (usedSkill.isSaved()) {
+                deadPlayers.clear();
+                timestamp = System.currentTimeMillis();
                 skillUsed = true;
-                return 0;
+                return -1;
+            } else if (usedSkill.getPoisoned() > 0) {
+                deadPlayers.add(usedSkill.getPoisoned());
+                timestamp = System.currentTimeMillis();
+                skillUsed = true;
+                return -1;
             }
+            if (usedSkill.getChecked() > 0) {
+                if (players.get(usedSkill.getChecked()).getIdentity().equals("wolf")) {
+                    timestamp = System.currentTimeMillis();
+                    skillUsed = true;
+                    return 1;
+                } else {
+                    timestamp = System.currentTimeMillis();
+                    skillUsed = true;
+                    return 0;
+                }
+            }
+            timestamp = System.currentTimeMillis();
+            return -1;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        timestamp = date.getTime();
-        return -1;
+        return 0;
     }
 
     /**
@@ -153,23 +155,27 @@ public class Game {
     }
 
     public static String getTrack() {
+        System.out.println( timestamp + wolfDelay * 1000 );
+        System.out.println(gameState);
+        System.out.println(System.currentTimeMillis());
+        System.out.println(skillUsed);
         switch (gameState) {
             case 1:
-                if (skillUsed && date.getTime() > timestamp + wolfDelay * 1000) {
+                if (skillUsed && (System.currentTimeMillis() > (int)(timestamp + wolfDelay * 1000))) {
                     skillUsed = false;
                     gameState++;
                     return "witch";
                 }
                 break;
             case 2:
-                if (skillUsed && date.getTime() > timestamp + witchDelay * 1000) {
+                if (skillUsed && (System.currentTimeMillis() > (int)(timestamp + witchDelay * 1000))) {
                     skillUsed = false;
                     gameState++;
                     return "prophet";
                 }
                 break;
             case 3:
-                if (skillUsed && date.getTime() > timestamp + prophetDelay * 1000) {
+                if (skillUsed && (System.currentTimeMillis() > (int)(timestamp + prophetDelay * 1000))) {
                     skillUsed = false;
                     gameState = 0;
                     return "day";
@@ -217,6 +223,6 @@ public class Game {
         wolfDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         witchDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         prophetDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
-        timestamp = 0.0;
+        timestamp = 0;
     }
 }
