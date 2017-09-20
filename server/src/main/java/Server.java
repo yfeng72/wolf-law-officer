@@ -75,5 +75,8 @@ public class Server {
         get( "lastNightInfo/*", (req, res) -> {
             return Game.getLastNightInfo();
         });
+        get( "checkDeath/*", (req, res) -> {
+            return Game.checkDeath();
+        });
     }
 }

@@ -83,9 +83,16 @@ public class Game {
     }
 
     public static List<Integer> getLastNightInfo() {
-        List<Integer> deadPlayerList = new ArrayList<Integer>(deadPlayers);
+        List<Integer> deadPlayerList = new ArrayList<>(deadPlayers);
         Collections.sort( deadPlayerList );
         return deadPlayerList;
+    }
+
+    public static int checkDeath() {
+        if (deadPlayers.size() == 0) {
+            return 0;
+        }
+        return new ArrayList<Integer>(deadPlayers).get(0);
     }
 
     /**
