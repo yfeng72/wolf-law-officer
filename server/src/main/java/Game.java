@@ -7,36 +7,36 @@ import java.util.*;
 
 @Data
 public class Game {
-    boolean inProgress;
-    int numPlayers;
-    boolean hasHunter;
-    boolean hasDumbass;
-    boolean hasKilled;
-    int curLawOfficer = 1;
-    int gameState;
-    double wolfDelay;
-    double witchDelay;
-    double prophetDelay;
-    boolean skillUsed;
-    int numWolves;
-    Map<Integer, User> players;
-    Set<Integer> deadPlayers;
-    List<User> playerList;
-    Date date;
-    double timestamp;
+    static boolean inProgress;
+    static int numPlayers;
+    static boolean hasHunter;
+    static boolean hasDumbass;
+    static boolean hasKilled;
+    static int curLawOfficer = 1;
+    static int gameState;
+    static double wolfDelay;
+    static double witchDelay;
+    static double prophetDelay;
+    static boolean skillUsed;
+    static int numWolves;
+    static Map<Integer, User> players;
+    static Set<Integer> deadPlayers;
+    static List<User> playerList;
+    static Date date;
+    static double timestamp;
 
-    public Game(int numPlayers, int numWolves, boolean hasHunter, boolean hasDumbass) {
-        this.numPlayers = numPlayers;
-        this.hasDumbass = hasDumbass;
-        this.hasHunter = hasHunter;
-        this.numWolves = numWolves;
+    public static void startGame(int numPlayers, int numWolves, boolean hasHunter, boolean hasDumbass) {
+        Game.numPlayers = numPlayers;
+        Game.hasDumbass = hasDumbass;
+        Game.hasHunter = hasHunter;
+        Game.numWolves = numWolves;
         Random r = new Random();
         wolfDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         witchDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         prophetDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
-        players = new HashMap<Integer, User>();
-        deadPlayers = new HashSet<Integer>();
-        playerList = new ArrayList<User>();
+        players = new HashMap<>();
+        deadPlayers = new HashSet<>();
+        playerList = new ArrayList<>();
 
         for (int i = 0; i < numPlayers; i++) {
             playerList.add( new User(i + 1) );
@@ -71,18 +71,19 @@ public class Game {
         }
     }
 
-    public void becomeLawOfficer(int userId) {
+    public static void becomeLawOfficer(int userId) {
         players.get(curLawOfficer).setLawOfficer( false );
         players.get( userId ).setLawOfficer( true );
         curLawOfficer = userId;
     }
 
-    public String getIdentity(int userId) {
+    public static String getIdentity(int userId) {
         players.get(userId).setCheckedIdentity( true );
+        System.out.println(players.get(userId).getIdentity());
         return players.get(userId).getIdentity();
     }
 
-    public List<Integer> getLastNightInfo() {
+    public static List<Integer> getLastNightInfo() {
         List<Integer> deadPlayerList = new ArrayList<Integer>(deadPlayers);
         Collections.sort( deadPlayerList );
         return deadPlayerList;
@@ -93,7 +94,7 @@ public class Game {
      * @param usedSkill
      * @return  1 if wolf, 0 if not wolf, -1 if user is not prophet
      */
-    public int useSkill(Skill usedSkill) {
+    public static int useSkill(Skill usedSkill) {
         if (!hasKilled && usedSkill.getKilled() > 0) {
             deadPlayers.add( usedSkill.getKilled() );
             timestamp = date.getTime();
@@ -136,7 +137,7 @@ public class Game {
      *
      * @return
      */
-    public boolean startGame() {
+    public static boolean enterNight() {
         for (Map.Entry<Integer, User> player : players.entrySet()) {
             if (!player.getValue().isCheckedIdentity()) {
                 return false;
@@ -151,7 +152,7 @@ public class Game {
         return false;
     }
 
-    public String getTrack() {
+    public static String getTrack() {
         switch (gameState) {
             case 1:
                 if (skillUsed && date.getTime() > timestamp + wolfDelay * 1000) {
@@ -180,7 +181,7 @@ public class Game {
         return "";
     }
 
-    public void reshuffle() {
+    public static void reshuffle() {
         gameState = 0;
         Collections.shuffle( playerList );
         for (int i = 0; i < numPlayers; i++) {
