@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { User, Settings } from './models';
 import { CallService } from './services';
@@ -12,34 +13,26 @@ import { CallService } from './services';
 export class AppComponent {
   
   private _user: User = {
-  	userId: 1,
+  	userId: -1,
   	identity: null,
   	isLawOfficer: false,
   	checkedIdentity: false
   };
   private currentSettings: Settings;
 
-  constructor(private callService: CallService) {
+  constructor(private callService: CallService, private router: Router) {
 
   }
 
   onCreateGame() {
-  	let mockData: Settings = {
-  		numPlayers: 6,
-  		numWolves: 2,
-  		hasHunter: false,
-  		hasDumbass: false
-  	}
-  	console.log(this.callService.generateQuery(mockData))
-  	let url = "createGame/" + this.callService.generateQuery(mockData);
-  	this.callService.get(url).map(rsp => rsp.json() as Settings).subscribe(settings => this.currentSettings = settings)
+    this.router.navigate(['settings']);
   }
 
   becomeJudge(){
   	this._user.isLawOfficer = true;
   	let url = "becomeLawOfficer/" + this._user.userId;
   	this.callService.get(url).map(rsp => {}).subscribe(rsp => {
-
+      console.log("Now, you are the judge.");
   	})
   }
 

@@ -1,0 +1,35 @@
+:host {
+  position: relative;
+}
+
+md-input {
+  margin: 16px;
+}
+
+md-button-toggle-group {
+  margin: 16px;
+  overflow: auto;
+}
+
+md-card {
+  margin: 32px 32px 32px 32px;
+}
+
+p.warn {
+  color: #FFAA11;
+}
+
+md-button-toggle-group {
+  margin: 16px;
+  overflow: auto;
+}
+
+button {
+  margin-bottom: 16px;
+}
+
+.bottom {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+}
