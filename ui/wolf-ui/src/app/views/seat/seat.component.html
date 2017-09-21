@@ -1,0 +1,5 @@
+<div class="seat">
+    <div>
+    <button md-raised-button *ngFor = "let person of persons" 
+    (click)="clickHandler(choice)" value="person._id">{{person._id}}</button>
+</div>
