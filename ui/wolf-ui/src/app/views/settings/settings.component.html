@@ -1,0 +1,29 @@
+<div class="grid-center-spaceAround">
+  <div class="col-12">
+    <md-card class="col-12">
+    <md-toolbar class="scalarName" color="primary" (click)="column.show=!column.show">{{option.name}}</md-toolbar>
+    <md-card-content>
+      <form>
+        <md-input-container>
+          <input mdInput placeholder="请输入游戏人数" [(ngModel)]="settings.numPlayers" name="numberOfPlayers"/>
+        </md-input-container>
+        <md-input-container>
+          <input mdInput placeholder="请输入狼人人数" name="numberOfWolves" [(ngModel)]="settings.numWolves"/>
+        </md-input-container>
+        <md-radio-group name="hasHunter" [(ngModel)]="settings.hasHunter">
+          <md-radio-button value=true>有</md-radio-button>
+          <md-radio-button value=false>无</md-radio-button>
+        </md-radio-group>
+        <br/>
+        <md-radio-group name="hasDumbass" [(ngModel)]="settings.hasDumbass">
+          <md-radio-button value=true>有</md-radio-button>
+          <md-radio-button value=false>无</md-radio-button>
+        </md-radio-group>
+      </form>
+      <p class="warn" *ngIf="settings.numPlayers<3||settings.numWolves<1">请填写完整</p>
+    </md-card-content>
+  </md-card>
+  </div>
+</div>
+
+<button [disabled]="settings.numPlayers<3||settings.numWolves<1" md-raised-button class="bottom" color="green" (click)="onCreateGame()">创建游戏</button>
