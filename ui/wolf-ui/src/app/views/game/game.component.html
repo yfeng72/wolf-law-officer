@@ -1,0 +1,11 @@
+<div class="control">
+	<form (ngSubmit)="onUseSkill()" #gameSettings="ngForm">
+        <div class="form-group">
+          <label for="target">使用对象: </label>
+            <input type="number" class="form-control" id="name" required [(ngModel)]="target" name="target" #name="ngModel">
+        </div>
+        <button md-raised-button>确定对象</button>
+    </form>
+	<button class="checkInfo" md-raised-button (click)="onCheckNightInfo()">查看昨夜信息</button>
+	<div><p class="nightInfo">昨夜死亡的是：{{nightInfo}}</p></div>
+</div>
