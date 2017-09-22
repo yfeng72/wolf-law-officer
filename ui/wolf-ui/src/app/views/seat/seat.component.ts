@@ -17,7 +17,6 @@ export class SeatComponent {
 	}
 
 	onSetId(id: number) {
-		console.log(id);
 		this.statusService._user.userId = id;
 	}
 }

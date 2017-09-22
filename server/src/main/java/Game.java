@@ -7,36 +7,35 @@ import java.util.*;
 
 @Data
 public class Game {
-    boolean inProgress;
-    int numPlayers;
-    boolean hasHunter;
-    boolean hasDumbass;
-    boolean hasKilled;
-    int curLawOfficer = 1;
-    int gameState;
-    double wolfDelay;
-    double witchDelay;
-    double prophetDelay;
-    boolean skillUsed;
-    int numWolves;
-    Map<Integer, User> players;
-    Set<Integer> deadPlayers;
-    List<User> playerList;
-    Date date;
-    double timestamp;
+    static boolean inProgress;
+    static int numPlayers;
+    static boolean hasHunter;
+    static boolean hasDumbass;
+    static boolean hasKilled;
+    static int curLawOfficer = 1;
+    static int gameState;
+    static double wolfDelay;
+    static double witchDelay;
+    static double prophetDelay;
+    static boolean skillUsed;
+    static int numWolves;
+    static Map<Integer, User> players;
+    static Set<Integer> deadPlayers;
+    static List<User> playerList;
+    static long timestamp;
 
-    public Game(int numPlayers, int numWolves, boolean hasHunter, boolean hasDumbass) {
-        this.numPlayers = numPlayers;
-        this.hasDumbass = hasDumbass;
-        this.hasHunter = hasHunter;
-        this.numWolves = numWolves;
+    public static void startGame(int numPlayers, int numWolves, boolean hasHunter, boolean hasDumbass) {
+        Game.numPlayers = numPlayers;
+        Game.hasDumbass = hasDumbass;
+        Game.hasHunter = hasHunter;
+        Game.numWolves = numWolves;
         Random r = new Random();
         wolfDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         witchDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         prophetDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
-        players = new HashMap<Integer, User>();
-        deadPlayers = new HashSet<Integer>();
-        playerList = new ArrayList<User>();
+        players = new HashMap<>();
+        deadPlayers = new HashSet<>();
+        playerList = new ArrayList<>();
 
         for (int i = 0; i < numPlayers; i++) {
             playerList.add( new User(i + 1) );
@@ -71,21 +70,29 @@ public class Game {
         }
     }
 
-    public void becomeLawOfficer(int userId) {
+    public static void becomeLawOfficer(int userId) {
         players.get(curLawOfficer).setLawOfficer( false );
         players.get( userId ).setLawOfficer( true );
         curLawOfficer = userId;
     }
 
-    public String getIdentity(int userId) {
+    public static String getIdentity(int userId) {
         players.get(userId).setCheckedIdentity( true );
+        System.out.println(players.get(userId).getIdentity());
         return players.get(userId).getIdentity();
     }
 
-    public List<Integer> getLastNightInfo() {
-        List<Integer> deadPlayerList = new ArrayList<Integer>(deadPlayers);
+    public static List<Integer> getLastNightInfo() {
+        List<Integer> deadPlayerList = new ArrayList<>(deadPlayers);
         Collections.sort( deadPlayerList );
         return deadPlayerList;
+    }
+
+    public static int checkDeath() {
+        if (deadPlayers.size() == 0) {
+            return 0;
+        }
+        return new ArrayList<Integer>(deadPlayers).get(0);
     }
 
     /**
@@ -93,39 +100,42 @@ public class Game {
      * @param usedSkill
      * @return  1 if wolf, 0 if not wolf, -1 if user is not prophet
      */
-    public int useSkill(Skill usedSkill) {
-        if (!hasKilled && usedSkill.getKilled() > 0) {
-            deadPlayers.add( usedSkill.getKilled() );
-            timestamp = date.getTime();
-            skillUsed = true;
-            return -1;
-        }
-        if (usedSkill.isSaved()) {
-            deadPlayers.clear();
-            timestamp = date.getTime();
-            skillUsed = true;
-            return -1;
-        }
-        else if (usedSkill.getPoisoned() > 0) {
-            deadPlayers.add(usedSkill.getPoisoned());
-            timestamp = date.getTime();
-            skillUsed = true;
-            return -1;
-        }
-        if (usedSkill.getChecked() > 0) {
-            if (players.get(usedSkill.getChecked()).getIdentity().equals("wolf")) {
-                timestamp = date.getTime();
+    public static int useSkill(Skill usedSkill) {
+        try {
+            if (!hasKilled && usedSkill.getKilled() > 0) {
+                deadPlayers.add(usedSkill.getKilled());
+                timestamp = System.currentTimeMillis();
                 skillUsed = true;
-                return 1;
+                return -1;
             }
-            else {
-                timestamp = date.getTime();
+            if (usedSkill.isSaved()) {
+                deadPlayers.clear();
+                timestamp = System.currentTimeMillis();
                 skillUsed = true;
-                return 0;
+                return -1;
+            } else if (usedSkill.getPoisoned() > 0) {
+                deadPlayers.add(usedSkill.getPoisoned());
+                timestamp = System.currentTimeMillis();
+                skillUsed = true;
+                return -1;
             }
+            if (usedSkill.getChecked() > 0) {
+                if (players.get(usedSkill.getChecked()).getIdentity().equals("wolf")) {
+                    timestamp = System.currentTimeMillis();
+                    skillUsed = true;
+                    return 1;
+                } else {
+                    timestamp = System.currentTimeMillis();
+                    skillUsed = true;
+                    return 0;
+                }
+            }
+            timestamp = System.currentTimeMillis();
+            return -1;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        timestamp = date.getTime();
-        return -1;
+        return 0;
     }
 
     /**
@@ -136,7 +146,7 @@ public class Game {
      *
      * @return
      */
-    public boolean startGame() {
+    public static boolean enterNight() {
         for (Map.Entry<Integer, User> player : players.entrySet()) {
             if (!player.getValue().isCheckedIdentity()) {
                 return false;
@@ -151,24 +161,28 @@ public class Game {
         return false;
     }
 
-    public String getTrack() {
+    public static String getTrack() {
+        System.out.println( timestamp + wolfDelay * 1000 );
+        System.out.println(gameState);
+        System.out.println(System.currentTimeMillis());
+        System.out.println(skillUsed);
         switch (gameState) {
             case 1:
-                if (skillUsed && date.getTime() > timestamp + wolfDelay * 1000) {
+                if (skillUsed && (System.currentTimeMillis() > (int)(timestamp + wolfDelay * 1000))) {
                     skillUsed = false;
                     gameState++;
                     return "witch";
                 }
                 break;
             case 2:
-                if (skillUsed && date.getTime() > timestamp + witchDelay * 1000) {
+                if (skillUsed && (System.currentTimeMillis() > (int)(timestamp + witchDelay * 1000))) {
                     skillUsed = false;
                     gameState++;
                     return "prophet";
                 }
                 break;
             case 3:
-                if (skillUsed && date.getTime() > timestamp + prophetDelay * 1000) {
+                if (skillUsed && (System.currentTimeMillis() > (int)(timestamp + prophetDelay * 1000))) {
                     skillUsed = false;
                     gameState = 0;
                     return "day";
@@ -180,7 +194,7 @@ public class Game {
         return "";
     }
 
-    public void reshuffle() {
+    public static void reshuffle() {
         gameState = 0;
         Collections.shuffle( playerList );
         for (int i = 0; i < numPlayers; i++) {
@@ -216,6 +230,6 @@ public class Game {
         wolfDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         witchDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
         prophetDelay = 3.0 + (5.0 - 3.0) * r.nextDouble();
-        timestamp = 0.0;
+        timestamp = 0;
     }
 }
