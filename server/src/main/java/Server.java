@@ -54,11 +54,8 @@ public class Server {
         } );
         get( "useSkill/*", (req, res) -> {
             int userId = Integer.valueOf(req.queryParams( "userId" ));
-            int killed = Integer.valueOf(req.queryParams( "killed" ));
-            int poisoned = Integer.valueOf(req.queryParams( "poisoned" ));
-            int checked = Integer.valueOf(req.queryParams( "checked" ));
-            boolean saved = Boolean.parseBoolean(req.queryParams( "saved" ));
-            Skill skill = new Skill(userId, killed, poisoned, saved, checked);
+            int targetId = Integer.valueOf(req.queryParams( "targetId" ));
+            Skill skill = new Skill(userId, targetId);
 
             return Game.useSkill(skill);
         });

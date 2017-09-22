@@ -25,6 +25,7 @@ public class Game {
     static long timestamp;
 
     public static void startGame(int numPlayers, int numWolves, boolean hasHunter, boolean hasDumbass) {
+        Game.gameState = 0;
         Game.numPlayers = numPlayers;
         Game.hasDumbass = hasDumbass;
         Game.hasHunter = hasHunter;
@@ -102,36 +103,46 @@ public class Game {
      */
     public static int useSkill(Skill usedSkill) {
         try {
-            if (!hasKilled && usedSkill.getKilled() > 0) {
-                deadPlayers.add(usedSkill.getKilled());
-                timestamp = System.currentTimeMillis();
-                skillUsed = true;
-                return -1;
+            String identity = players.get( usedSkill.getUserId() ).getIdentity();
+            int target = usedSkill.getTargetId();
+            switch ( identity ) {
+                case "wolf":
+                    if ( !hasKilled && target > 0 ) {
+                        deadPlayers.add( target );
+                        timestamp = System.currentTimeMillis();
+                        skillUsed = true;
+                        return -1;
+                    }
+                    break;
+                case "witch":
+                    if ( target < 0 ) {
+                        deadPlayers.clear();
+                        timestamp = System.currentTimeMillis();
+                        skillUsed = true;
+                        return -1;
+                    } else if ( target > 0 ) {
+                        deadPlayers.add( target );
+                        timestamp = System.currentTimeMillis();
+                        skillUsed = true;
+                        return -1;
+                    }
+                    break;
+                case "prophet":
+                    if ( target > 0 ) {
+                        if ( players.get( target ).getIdentity().equals( "wolf" ) ) {
+                            timestamp = System.currentTimeMillis();
+                            skillUsed = true;
+                            return 1;
+                        } else {
+                            timestamp = System.currentTimeMillis();
+                            skillUsed = true;
+                            return 0;
+                        }
+                    }
+                    break;
+                default:
+                    return -1;
             }
-            if (usedSkill.isSaved()) {
-                deadPlayers.clear();
-                timestamp = System.currentTimeMillis();
-                skillUsed = true;
-                return -1;
-            } else if (usedSkill.getPoisoned() > 0) {
-                deadPlayers.add(usedSkill.getPoisoned());
-                timestamp = System.currentTimeMillis();
-                skillUsed = true;
-                return -1;
-            }
-            if (usedSkill.getChecked() > 0) {
-                if (players.get(usedSkill.getChecked()).getIdentity().equals("wolf")) {
-                    timestamp = System.currentTimeMillis();
-                    skillUsed = true;
-                    return 1;
-                } else {
-                    timestamp = System.currentTimeMillis();
-                    skillUsed = true;
-                    return 0;
-                }
-            }
-            timestamp = System.currentTimeMillis();
-            return -1;
         } catch (Exception e) {
             e.printStackTrace();
         }
