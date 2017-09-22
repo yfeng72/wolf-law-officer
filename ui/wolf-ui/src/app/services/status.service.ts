@@ -52,4 +52,9 @@ export class StatusService {
   		let url = "reshuffle/";
   		return this.callService.get(url).map(rsp => {});
   	}
+
+    getTrack(): Observable<string> {
+      let url = "getTrack/";
+      return this.callService.get(url).map(rsp => rsp._body as string);
+    }
 }
