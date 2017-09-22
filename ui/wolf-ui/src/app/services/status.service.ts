@@ -45,4 +45,11 @@ export class StatusService {
   		let url = "startGame/";
   		return this.callService.get(url).map(rsp => rsp as boolean);
   	}
+
+  	useSkill(targetId: number) {
+  		let url = "useSkill/" + this._user.userId + "/target/" + targetId;
+  		return this.callService.get(url).map(rsp => {}).subscribe(() => {
+  			console.log("skill used successfully");
+  		});
+  	}
 }
