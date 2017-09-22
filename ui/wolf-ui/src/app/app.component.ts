@@ -32,8 +32,7 @@ export class AppComponent {
 
   onCheckIdentity() {
   	return this.statusService.checkIdentity().subscribe(rsp => {
-      console.log(rsp);
-      this.mdDialog.open(IdentityDialogComponent, {height: '80%', width: '60%', data: {indetity: rsp}});
+      this.mdDialog.open(IdentityDialogComponent, {height: '80%', width: '60%', data: {identity: rsp}});
     });
   }
 

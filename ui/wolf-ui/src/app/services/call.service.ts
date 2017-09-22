@@ -5,7 +5,7 @@ import { Http, Headers } from '@angular/http';
 @Injectable()
 export class CallService {
 
-	private baseUrl = "http://fbdb6e10.ngrok.io";
+	private baseUrl = "http://2df34ac6.ngrok.io";
 
 	constructor(private http: Http) {
 

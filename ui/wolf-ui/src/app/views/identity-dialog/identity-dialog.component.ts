@@ -17,6 +17,7 @@ export class IdentityDialogComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.data.identity);
     this.identity = this.data.identity;
   }
 

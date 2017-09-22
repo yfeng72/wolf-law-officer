@@ -22,7 +22,10 @@ export class GameComponent {
    }
 
   onUseSkill() {
-    return this.statusService.useSkill(this.target);
+    this.statusService.useSkill(this.target).subscribe(rsp =>{
+      alert(rsp);
+    });
+
   }
 
   onCheckNightInfo() {

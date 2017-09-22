@@ -30,24 +30,22 @@ export class StatusService {
 
 	checkIdentity(): Observable<string> {
 		let url = "getIdentity/" + this._user.userId;
-  		return this.callService.get(url).map(rsp => rsp.json() as string);
+  		return this.callService.get(url).map(rsp => rsp._body as string);
 	}
 
 	checkNightInfo(): Observable<number[]> {
   		let url = "lastNightInfo/";
-  		return this.callService.get(url).map(rsp => rsp.json() as number[]);
+  		return this.callService.get(url).map(rsp => rsp._body as number[]);
   }
 
   	startGame(): Observable<boolean> {
   		let url = "startGame/";
-  		return this.callService.get(url).map(rsp => rsp.json() as boolean);
+  		return this.callService.get(url).map(rsp => rsp._body as boolean);
   	}
 
   	useSkill(targetId: number) {
   		let url = "useSkill/?userId=" + this._user.userId + "&targetId=" + targetId;
-  		return this.callService.get(url).map(rsp => {}).subscribe(() => {
-  			console.log("skill used successfully");
-  		});
+  		return this.callService.get(url).map(rsp => rsp._body as number);
   	}
 
   	reStart(): Observable<void> {
