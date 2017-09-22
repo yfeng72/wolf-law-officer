@@ -1,29 +1,34 @@
-<div class="grid-center-spaceAround">
-  <div class="col-12">
-    <md-card class="col-12">
-    <md-toolbar class="scalarName" color="primary" (click)="column.show=!column.show">{{option.name}}</md-toolbar>
-    <md-card-content>
-      <form>
-        <md-input-container>
-          <input mdInput placeholder="请输入游戏人数" [(ngModel)]="settings.numPlayers" name="numberOfPlayers"/>
-        </md-input-container>
-        <md-input-container>
-          <input mdInput placeholder="请输入狼人人数" name="numberOfWolves" [(ngModel)]="settings.numWolves"/>
-        </md-input-container>
-        <md-radio-group name="hasHunter" [(ngModel)]="settings.hasHunter">
-          <md-radio-button value=true>有</md-radio-button>
-          <md-radio-button value=false>无</md-radio-button>
-        </md-radio-group>
-        <br/>
-        <md-radio-group name="hasDumbass" [(ngModel)]="settings.hasDumbass">
-          <md-radio-button value=true>有</md-radio-button>
-          <md-radio-button value=false>无</md-radio-button>
-        </md-radio-group>
+<div class="col-8 content">
+  <div class="grid-center-spaceAround">
+    <md-card>
+      <md-card-title class="grid-center param">游戏设置</md-card-title>
+      <hr>
+      <md-card-content>
+      <form (ngSubmit)="onCreateGame()" #gameSettings="ngForm">
+        <div class="form-group">
+          <label for="numPlayers">请输入游戏人数: </label>
+            <input type="number" class="form-control" id="name" required [(ngModel)]="settings.numPlayers" name="numPlayers" #name="ngModel">
+        </div>
+        <div class="form-group">
+          <label for="numWolves">请输入狼人人数: </label>
+            <input type="number" class="form-control" id="name" required [(ngModel)]="settings.numWolves" name="numWolves" #name="ngModel">
+        </div>
+        <div class="form-group">
+          <label>是否有猎人: </label>
+          <select (change)="setHunter($event.target.value)">
+            <option *ngFor="let val of yesOrNo">{{val}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>是否有白痴: </label>
+          <select (change)="setDumbass($event.target.value)">
+            <option *ngFor="let val of yesOrNo">{{val}}</option>
+          </select>
+        </div>
+        <button [disabled]="settings.numPlayers<3||settings.numWolves<1" md-raised-button class="bottom" color="green">创建游戏</button>
       </form>
       <p class="warn" *ngIf="settings.numPlayers<3||settings.numWolves<1">请填写完整</p>
     </md-card-content>
   </md-card>
   </div>
 </div>
-
-<button [disabled]="settings.numPlayers<3||settings.numWolves<1" md-raised-button class="bottom" color="green" (click)="onCreateGame()">创建游戏</button>

@@ -13,6 +13,7 @@ import { CallService, StatusService } from './services';
 import { SeatComponent } from './views/seat';
 import { GameComponent } from './views/game';
 import { SettingsComponent } from './views/settings';
+import { IdentityDialogComponent } from './views/identity-dialog';
 
 import { routes } from './app.routes';
 
@@ -21,7 +22,8 @@ import { routes } from './app.routes';
     AppComponent,
     SeatComponent,
     GameComponent,
-    SettingsComponent
+    SettingsComponent,
+    IdentityDialogComponent
   ],
   imports: [
     BrowserModule, 
@@ -35,6 +37,9 @@ import { routes } from './app.routes';
   providers: [
   	CallService,
     StatusService
+  ],
+  entryComponents: [
+      IdentityDialogComponent,
   ],
   bootstrap: [AppComponent]
 })

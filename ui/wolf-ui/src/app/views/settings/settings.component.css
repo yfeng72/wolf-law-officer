@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.content {
+  margin-top: 64px;
+}
+
 md-input {
   margin: 16px;
 }

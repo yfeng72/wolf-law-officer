@@ -1,7 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <md-toolbar>
   <img class="wolf" src="assets/img/wolf.png"/>
-  <button md-button (click)="onCreateGame()" *ngIf="!isSet &amp;&amp; _user.isLawOfficer">创建游戏</button>
+  <button md-button (click)="onCreateGame()">创建游戏</button>
   <button md-button (click)="becomeJudge()" [disabled]="gameStarted">成为法官</button>
   <button md-button (click)="onCheckIdentity()">查看身份</button>
   <button md-button (click)="reStart()">重新发牌</button>

@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { MdDialog } from '@angular/material';
 
 import { User, Settings } from './models';
-import { CallService } from './services';
+import { CallService, StatusService } from './services';
+import { IdentityDialogComponent } from './views/identity-dialog';
 
 @Component({
   	selector: 'app-root',
@@ -11,16 +13,8 @@ import { CallService } from './services';
   	styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  
-  private _user: User = {
-  	userId: -1,
-  	identity: null,
-  	isLawOfficer: false,
-  	checkedIdentity: false
-  };
-  private currentSettings: Settings;
 
-  constructor(private callService: CallService, private router: Router) {
+  constructor(private callService: CallService, private statusService: StatusService, private router: Router, private mdDialog: MdDialog) {
 
   }
 
@@ -29,31 +23,18 @@ export class AppComponent {
   }
 
   becomeJudge(){
-  	this._user.isLawOfficer = true;
-  	let url = "becomeLawOfficer/" + this._user.userId;
-  	this.callService.get(url).map(rsp => {}).subscribe(rsp => {
-      console.log("Now, you are the judge.");
-  	})
+    this.statusService.becomeJudge().subscribe(rsp => {
+      console.log('Now, you are the judge!');
+    });
   }
 
   onCheckIdentity() {
-  	this._user.checkedIdentity = true;
-  	let url = "getIdentity/" + this._user.userId;
-  	this.callService.get(url).map(rsp => rsp as string).subscribe(rsp => console.log(rsp));
+  	this.statusService.checkIdentity();
+    this.mdDialog.open(IdentityDialogComponent, {height: '80%', width: '60%'});
   }
 
   reStart(): Observable<void> {
   	let url = "reshuffle/";
   	return this.callService.get(url).map(rsp => {});
-  }
-
-  onCheckNightInfo(): Observable<number[]> {
-  	let url = "lastNightInfo/";
-  	return this.callService.get(url).map(rsp => rsp as number[]);
-  }
-
-  onStart(): Observable<boolean> {
-  	let url = "startGame/";
-  	return this.callService.get(url).map(rsp => rsp as boolean);
   }
 }
