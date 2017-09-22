@@ -43,7 +43,8 @@ export class SettingsComponent {
 
 	onCreateGame() {
   		let url = "createGame/" + this.callService.generateQuery(this.settings);
-  		this.callService.get(url).map(rsp => rsp.json() as Settings).subscribe(settings => 
-  	  this.router.navigate(['game']));
+  		this.callService.get(url).map(rsp => {}).subscribe(() => {
+  	    this.router.navigate(['game']);
+      });
 	}
 }

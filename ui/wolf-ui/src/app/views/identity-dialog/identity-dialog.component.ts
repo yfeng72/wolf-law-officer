@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MdDialogRef, MD_DIALOG_DATA } from '@angular/material';
 
 import { StatusService } from '../../services';
@@ -8,17 +8,24 @@ import { StatusService } from '../../services';
   templateUrl: './identity-dialog.component.html',
   styleUrls: ['./identity-dialog.component.css']
 })
-export class IdentityDialogComponent {
+export class IdentityDialogComponent implements OnInit {
 
-  constructor(private dialogRef: MdDialogRef<IdentityDialogComponent>, private statusService: StatusService) {
+  private identity: string;
+
+  constructor(@Inject(MD_DIALOG_DATA) private data: {identity: string}, private dialogRef: MdDialogRef<IdentityDialogComponent>, private statusService: StatusService) {
 
   }
 
+  ngOnInit() {
+    console.log(this.data.identity);
+    this.identity = this.data.identity;
+  }
+
   getIdentity() {
-    if (!this.statusService._user.identity) {
+    if (!this.identity) {
       return "暂未获得";
     }
-    return this.statusService._user.identity;
+    return this.identity;
   }
 
   confirm() {

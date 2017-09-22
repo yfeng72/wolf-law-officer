@@ -1,10 +1,10 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <md-toolbar>
   <img class="wolf" src="assets/img/wolf.png"/>
-  <button md-button (click)="onCreateGame()">创建游戏</button>
-  <button md-button (click)="becomeJudge()" [disabled]="gameStarted">成为法官</button>
-  <button md-button (click)="onCheckIdentity()">查看身份</button>
-  <button md-button (click)="reStart()">重新发牌</button>
+  <button md-button (click)="onCreateGame()" *ngIf="user.isLawOfficer">创建游戏</button>
+  <button md-button (click)="becomeJudge()" *ngIf="user.userId>0">成为法官</button>
+  <button md-button (click)="onCheckIdentity()" *ngIf="user.userId>0">查看身份</button>
+  <button md-button (click)="onReStart()">重新发牌</button>
 </md-toolbar>
 <main>
   <div class="content">

@@ -14,8 +14,10 @@ import { IdentityDialogComponent } from './views/identity-dialog';
 })
 export class AppComponent {
 
-  constructor(private callService: CallService, private statusService: StatusService, private router: Router, private mdDialog: MdDialog) {
+  private user: User;
 
+  constructor(private callService: CallService, private statusService: StatusService, private router: Router, private mdDialog: MdDialog) {
+    this.user = this.statusService._user;
   }
 
   onCreateGame() {
@@ -23,18 +25,18 @@ export class AppComponent {
   }
 
   becomeJudge(){
-    this.statusService.becomeJudge().subscribe(rsp => {
+    return this.statusService.becomeJudge().subscribe(rsp => {
       console.log('Now, you are the judge!');
     });
   }
 
   onCheckIdentity() {
-  	this.statusService.checkIdentity();
-    this.mdDialog.open(IdentityDialogComponent, {height: '80%', width: '60%'});
+  	return this.statusService.checkIdentity().subscribe(rsp => {
+      this.mdDialog.open(IdentityDialogComponent, {height: '80%', width: '60%', data: {identity: rsp}});
+    });
   }
 
-  reStart(): Observable<void> {
-  	let url = "reshuffle/";
-  	return this.callService.get(url).map(rsp => {});
+  onReStart() {
+  	this.statusService.reStart().subscribe(rsp => {});
   }
 }
