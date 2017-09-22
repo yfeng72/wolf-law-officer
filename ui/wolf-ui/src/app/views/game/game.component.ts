@@ -19,10 +19,7 @@ export class GameComponent implements OnInit {
   private wolf: HTMLAudioElement = new Audio();
 
    constructor(private statusService: StatusService) {
-     this.statusService.startGame().subscribe(rsp =>{
-       console.log("Game starts!");
-       this.isStart = true;
-     })
+
    }
 
    ngOnInit() {
@@ -34,8 +31,16 @@ export class GameComponent implements OnInit {
      this.prophet.load();
      this.witch.load();
      this.wolf.load();
-     let self = this;
-     setTimeout(self.onGetTrack(), 10000);
+   }
+
+   onStartGame() {
+     setInterval(this.onGetTrack, 1000);
+     return this.statusService.startGame().subscribe(rsp =>{
+       if (rsp === true) {
+         this.isStart = true;
+         console.log("Game starts!");
+       }
+     })
    }
 
   onUseSkill() {

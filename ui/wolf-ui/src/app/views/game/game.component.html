@@ -1,4 +1,5 @@
 <div class="control">
+	<button class="rightCorner" md-raised-button (click)="onStartGame()" *ngIf="!this.isStart">进入黑夜</button>
 	<form (ngSubmit)="onUseSkill()" #gameSettings="ngForm">
         <div class="form-group">
           <label for="target">使用对象: </label>

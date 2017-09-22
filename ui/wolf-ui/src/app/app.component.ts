@@ -39,4 +39,8 @@ export class AppComponent {
   onReStart() {
   	this.statusService.reStart().subscribe(rsp => {});
   }
+
+  enterGame() {
+    this.router.navigate(['game']);
+  }
 }
