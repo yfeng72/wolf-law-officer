@@ -9,7 +9,7 @@ import { StatusService } from '../../services';
     styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-   
+
   private nightInfo: number[];
   private isStart: boolean = false;
   private target: number;
@@ -34,13 +34,41 @@ export class GameComponent implements OnInit {
    }
 
    onStartGame() {
-     setInterval(this.onGetTrack, 1000);
+     const self = this;
+     const onGetTrack = (self) => {
+       return self => {
+         return this.statusService.getTrack().subscribe(rsp => {
+           if (rsp === "day") {
+             this.witch.pause();
+             this.wolf.pause();
+             this.prophet.pause();
+             this.day.play();
+           } else if (rsp === "wolf") {
+             this.witch.pause();
+             this.prophet.pause();
+             this.day.pause();
+             this.wolf.play();
+           } else if (rsp === "witch") {
+             this.prophet.pause();
+             this.day.pause();
+             this.wolf.pause();
+             this.witch.play();
+           } else if (rsp === "prophet") {
+             this.day.pause();
+             this.wolf.pause();
+             this.witch.pause();
+             this.prophet.play();
+           }
+         });
+       };
+     };
+     setInterval( onGetTrack(self), 1000);
      return this.statusService.startGame().subscribe(rsp =>{
        if (rsp === true) {
          this.isStart = true;
          console.log("Game starts!");
        }
-     })
+     });
    }
 
   onUseSkill() {
@@ -56,29 +84,5 @@ export class GameComponent implements OnInit {
     });
   }
 
-  onGetTrack() {
-    this.statusService.getTrack().subscribe(rsp =>{
-      if (rsp === "day") {
-        this.witch.pause();
-        this.wolf.pause();
-        this.prophet.pause();
-        this.day.play();
-      } else if (rsp === "wolf") {
-        this.witch.pause();
-        this.prophet.pause();
-        this.day.pause();
-        this.wolf.play();
-      } else if (rsp === "witch") {
-        this.prophet.pause();
-        this.day.pause();
-        this.wolf.pause();
-        this.witch.play();
-      } else if (rsp === "prophet") {
-        this.day.pause();
-        this.wolf.pause();
-        this.witch.pause();
-        this.prophet.play();
-      }
-    });
-  }
+
 }
